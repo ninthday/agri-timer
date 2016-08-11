@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Agrithon Countdown</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
@@ -30,7 +30,7 @@ and open the template in the editor.
                 display: inline-block;
                 font-weight: 100;
                 text-align: center;
-                font-size: 80px;
+                font-size: 100px;
             }
 
             #clockdiv > div{
@@ -51,11 +51,74 @@ and open the template in the editor.
                 padding-top: 5px;
                 font-size: 16px;
             }
+
+            .agri-btn {
+                -webkit-box-sizing: content-box;
+                -moz-box-sizing: content-box;
+                box-sizing: content-box;
+                cursor: pointer;
+                margin: 0 auto;
+                padding: 6px 20px;
+                border: 2px solid #00BF96;
+                -webkit-border-radius:5px;
+                border-radius: 5px;
+                color: #00BF96;
+                text-align: center;
+                text-overflow: clip;
+                letter-spacing: 1px;
+                background: #FFF;
+                -webkit-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+                -moz-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+                transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+            }
+
+            .agri-btn:hover {
+                color: #FFF;
+                background: #00BF96;
+            }
+
+            .agri-btn:active {
+                border: 2px solid rgba(33,224,163,1);
+                background: rgba(33,224,163,1);
+                -webkit-transition: none;
+                -moz-transition: none;
+                transition: none;
+            }
+
+            .agri-input {
+                display: inline-block;
+                -webkit-box-sizing: content-box;
+                -moz-box-sizing: content-box;
+                box-sizing: content-box;
+                padding: 6px 20px;
+                border: none;
+                -webkit-border-radius: 5px;
+                border-radius: 5px;
+                color: #00816A;
+                text-overflow: ellipsis;
+                background: rgba(252,252,252,1);
+                -webkit-box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2) inset;
+                box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2) inset;
+                text-shadow: 1px 1px 0 rgba(255,255,255,0.66) ;
+                -webkit-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+                -moz-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+                transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+            }
+
+            .agri-input:hover {
+                background: rgba(232,249,255,1);
+                -webkit-box-shadow: 0 2px 2px 0 rgba(90,90,90,0.2) inset;
+                box-shadow: 0 2px 2px 0 rgba(90,90,90,0.2) inset;
+            }
+
+            .agri-input:focus {
+                background: rgba(255,253,232,1);
+            }
         </style>
     </head>
     <body>
         <div>
-            <h1>Countdown Clock</h1>
+            <h1>Agri-Countdown</h1>
             <div id="clockdiv">
                 <div>
                     <span class="minutes"></span>
@@ -66,7 +129,21 @@ and open the template in the editor.
                     <div class="smalltext">Seconds</div>
                 </div>
             </div>
+            <div>
+                <button id="stop" class="agri-btn">Stop</button>
+            </div>
+            <div>
+                <h3>Total:</h3>
+                <input type="text" id="set-min" class="agri-input" placeholder="min." size="5">
+                <input type="text" id="set-sec" class="agri-input" placeholder="sec." size="5">
+                Remind:
+                <input type="text" id="remind-min" class="agri-input" placeholder="min." size="5">
+                <input type="text" id="remind-sec" class="agri-input" placeholder="sec." size="5">
+                <button id="agriGo" class="agri-btn">Go!</button>
+            </div>
         </div>
+        <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+        <script type="text/javascript" src="js/howler.min.js"></script>
         <script type="text/javascript">
             function getTimeRemaining(endtime) {
                 var t = Date.parse(endtime) - Date.parse(new Date());
@@ -83,10 +160,12 @@ and open the template in the editor.
                 };
             }
 
-            function initializeClock(id, endtime) {
+            function initializeClock(id, remindTime, endtime) {
                 var clock = document.getElementById(id);
                 var minutesSpan = clock.querySelector('.minutes');
                 var secondsSpan = clock.querySelector('.seconds');
+
+                soundStart.play();
 
                 function updateClock() {
                     var t = getTimeRemaining(endtime);
@@ -96,15 +175,51 @@ and open the template in the editor.
 
                     if (t.total <= 0) {
                         clearInterval(timeinterval);
+                        soundEnd.play();
                     }
+
+                    if (t.total === remindTime) {
+                        soundRemind.play();
+                    }
+
+                    console.log(t.total, remindTime);
                 }
 
                 updateClock();
                 var timeinterval = setInterval(updateClock, 1000);
             }
 
-            var deadline = new Date(Date.parse(new Date()) + 3 * 60 * 1000);
-            initializeClock('clockdiv', deadline);
+
+
+            var soundStart = new Howl({
+                src: ['sounds/pika.wav']
+            });
+
+            var soundRemind = new Howl({
+                src: ['sounds/pikapika.wav']
+            });
+
+            var soundEnd = new Howl({
+                src: ['sounds/pika_attact.wav'],
+                loop: true
+            });
+
+            $('#agriGo').click(function () {
+                var r_min = parseInt($('#remind-min').val()) || 0;
+                var r_sec = parseInt($('#remind-sec').val()) || 0;
+                var remindTime = ((r_min * 60) + r_sec) * 1000;
+
+                var t_min = parseInt($('#set-min').val()) || 0;
+                var t_sec = parseInt($('#set-sec').val()) || 0;
+                var t_timeDiff = ((t_min * 60) + t_sec) * 1000;
+                var deadline = new Date(Date.parse(new Date()) + t_timeDiff);
+
+                initializeClock('clockdiv', remindTime, deadline);
+            });
+
+            $('#stop').click(function () {
+                soundEnd.stop();
+            });
         </script>
     </body>
 </html>
