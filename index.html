@@ -172,6 +172,25 @@ and open the template in the editor.
                         <button id="agriGo" class="agri-btn">Go!</button>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4">
+                        <hr>
+                        <p class="lead">Sound Test</p>
+                        <button id="test-start" class="agri-btn">Start</button>
+                        <button id="test-remind" class="agri-btn">Remind</button>
+                        <button id="test-end" class="agri-btn">End</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <br>
+                    <img src="images/agri-1.png" alt="Agri-1" style="max-width: 120px;">
+                    <img src="images/agri-2.png" alt="Agri-2" style="max-width: 120px;">
+                    <img src="images/agri-3.png" alt="Agri-3" style="max-width: 120px;">
+                    <img src="images/agri-4.png" alt="Agri-4" style="max-width: 120px;">
+                </div>
             </div>
         </div>
         <script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
@@ -236,6 +255,10 @@ and open the template in the editor.
                 loop: true
             });
 
+            var soundEndOnce = new Howl({
+                src: ['sounds/pika_attact.wav']
+            });
+
             $('#agriGo').click(function () {
                 var r_min = parseInt($('#remind-min').val()) || 0;
                 var r_sec = parseInt($('#remind-sec').val()) || 0;
@@ -254,6 +277,18 @@ and open the template in the editor.
             $('#stop').click(function () {
                 soundEnd.stop();
                 $('#time-setting').slideDown();
+            });
+
+            $('#test-start').click(function () {
+                soundStart.play();
+            });
+
+            $('#test-remind').click(function () {
+                soundRemind.play();
+            });
+
+            $('#test-end').click(function () {
+                soundEndOnce.play();
             });
         </script>
     </body>
